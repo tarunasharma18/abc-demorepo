@@ -1,0 +1,10 @@
+com\bajajfinserv\health\qualifier1\StartupRunner.class
+com\bajajfinserv\health\qualifier1\client\RestTemplateHttpClient.class
+com\bajajfinserv\health\qualifier1\dto\GenerateWebhookResponse.class
+com\bajajfinserv\health\qualifier1\service\WebhookService.class
+com\bajajfinserv\health\qualifier1\dto\GenerateWebhookRequest.class
+com\bajajfinserv\health\qualifier1\service\WebhookServiceInterface.class
+com\bajajfinserv\health\qualifier1\config\AppConfig.class
+com\bajajfinserv\health\qualifier1\dto\FinalQueryRequest.class
+com\bajajfinserv\health\qualifier1\client\HttpClient.class
+com\bajajfinserv\health\qualifier1\Qualifier1Application.class
