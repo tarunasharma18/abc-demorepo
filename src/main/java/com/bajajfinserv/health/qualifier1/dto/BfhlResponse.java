@@ -6,11 +6,13 @@ import java.util.List;
 
 /**
  * Response DTO for POST /bfhl.
+ * Field named 'successFlag' internally to avoid Jackson generating
+ * a duplicate 'success' property alongside the @JsonProperty("is_success").
  */
 public class BfhlResponse {
 
     @JsonProperty("is_success")
-    private boolean isSuccess;
+    private boolean successFlag;
 
     @JsonProperty("user_id")
     private String userId;
@@ -41,8 +43,8 @@ public class BfhlResponse {
 
     public BfhlResponse() {}
 
-    public boolean isSuccess() { return isSuccess; }
-    public void setSuccess(boolean success) { isSuccess = success; }
+    public boolean isSuccessFlag() { return successFlag; }
+    public void setSuccess(boolean success) { this.successFlag = success; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
