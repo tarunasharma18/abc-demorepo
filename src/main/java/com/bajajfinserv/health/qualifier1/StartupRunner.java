@@ -10,9 +10,12 @@ import org.springframework.stereotype.Component;
 
 /**
  * Runs automatically on application startup.
- * Orchestrates the two-step process:
+ * Orchestrates the two-step webhook process:
  *   1. Generate webhook and retrieve access token.
  *   2. Submit the final SQL query to the webhook.
+ *
+ * The web server continues running after this completes so Railway
+ * can serve POST /bfhl and GET /bfhl/health.
  */
 @Component
 public class StartupRunner implements CommandLineRunner {
@@ -20,8 +23,8 @@ public class StartupRunner implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(StartupRunner.class);
 
     /**
-     * Final SQL query — formatted as a single line as required by the contest.
-     * Logic: Find the employee with the highest salary payment NOT made on the 1st of any month.
+     * Final SQL query as a single line.
+     * Finds the employee with the highest salary payment NOT made on the 1st of any month.
      */
     private static final String FINAL_QUERY =
             "SELECT p.AMOUNT AS SALARY, CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) AS NAME, " +
@@ -50,7 +53,7 @@ public class StartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("=== Bajaj Finserv Health Qualifier 1 - Starting Execution ===");
+        log.info("=== Bajaj Finserv Health Qualifier 1 - Startup Execution ===");
         log.info("Student: {}, RegNo: {}, Email: {}", studentName, studentRegNo, studentEmail);
 
         try {
@@ -59,23 +62,22 @@ public class StartupRunner implements CommandLineRunner {
             GenerateWebhookResponse webhookResponse =
                     webhookService.generateWebhook(studentName, studentRegNo, studentEmail);
 
-            String webhookUrl = webhookResponse.getWebhook();
-            String accessToken = webhookResponse.getAccessToken();
+            String webhookUrl   = webhookResponse.getWebhook();
+            String accessToken  = webhookResponse.getAccessToken();
 
             log.info("Webhook URL received: {}", webhookUrl);
             log.info("Access token received: [PRESENT, length={}]", accessToken.length());
 
             // Step 2: Submit the final SQL query
             log.info("--- Step 2: Submitting final SQL query ---");
-            log.info("Final Query: {}", FINAL_QUERY);
-
             webhookService.submitFinalQuery(webhookUrl, accessToken, FINAL_QUERY);
 
-            log.info("=== Execution completed successfully ===");
+            log.info("=== Startup execution completed successfully. Web server is running. ===");
 
         } catch (Exception e) {
-            log.error("=== Execution failed: {} ===", e.getMessage(), e);
-            System.exit(1);
+            // Log the error but do NOT exit — keep the web server alive for /bfhl requests
+            log.error("=== Startup webhook execution failed: {} ===", e.getMessage(), e);
+            log.warn("Web server will continue running. POST /bfhl is still available.");
         }
     }
 }
