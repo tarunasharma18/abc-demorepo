@@ -52,9 +52,9 @@ qualifier1-bfh-java/
 Edit `src/main/resources/application.properties` to set your student details:
 
 ```properties
-student.name=John Doe
-student.regNo=REG12347
-student.email=john@example.com
+student.name=Tarun Asharma
+student.regNo=0827AL231133
+student.email=tarunasharma230709@acropolis.in
 ```
 
 ---
